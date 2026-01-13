@@ -1,172 +1,116 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Dashboard Cuti</title>
-
+<title>Employee Leave Dashboard</title>
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
 <style>
-*{box-sizing:border-box;}
-body{
-  margin:0;
-  font-family: "Segoe UI", Arial;
-  background:linear-gradient(135deg,#0f172a,#1e3a8a,#2563eb);
-  min-height:100vh;
-  display:flex;
-  align-items:center;
-  justify-content:center;
-}
-
-.app{
-  width:380px;
-  background:rgba(255,255,255,.15);
-  backdrop-filter:blur(12px);
-  border-radius:20px;
-  padding:25px;
-  box-shadow:0 20px 40px rgba(0,0,0,.3);
-  color:white;
-  animation:fade .6s ease;
-}
-
-@keyframes fade{
-  from{opacity:0;transform:translateY(20px);}
-  to{opacity:1;transform:translateY(0);}
-}
-
-h2{
-  text-align:center;
-  margin-bottom:20px;
-  font-weight:600;
-}
-
-input{
-  width:100%;
-  padding:12px;
-  border-radius:10px;
-  border:none;
-  font-size:15px;
-  margin-top:10px;
-}
-
-button{
-  width:100%;
-  margin-top:15px;
-  padding:12px;
-  border:none;
-  border-radius:10px;
-  background:#22c55e;
-  color:white;
-  font-size:15px;
-  cursor:pointer;
-  transition:.3s;
-}
-
-button:hover{background:#16a34a;}
-
-.profile{
-  text-align:center;
-  margin-bottom:15px;
-}
-
-.profile h3{margin:5px 0;}
-.profile small{opacity:.8;}
-
-.card{
-  background:rgba(255,255,255,.15);
-  padding:14px;
-  border-radius:12px;
-  margin-top:12px;
-  display:flex;
-  justify-content:space-between;
-  align-items:center;
-}
-
-.stat-title{opacity:.85;font-size:14px;}
-
-.green{color:#22c55e;font-weight:bold;}
-.red{color:#ef4444;font-weight:bold;}
-
-.logout{
-  background:#ef4444;
-}
-.logout:hover{background:#dc2626;}
-
+body{font-family:Segoe UI,Arial;background:#f2f5f9;margin:0}
+.header{background:#0f172a;color:#fff;padding:16px 24px;font-size:20px;font-weight:600}
+.container{padding:24px}
+.card{background:#fff;border-radius:16px;padding:20px;box-shadow:0 8px 20px rgba(0,0,0,.08);margin-bottom:20px}
+.tabs{display:flex;gap:10px;margin-bottom:20px}
+.tab{padding:10px 20px;border-radius:10px;background:#e5e7eb;cursor:pointer;font-weight:600}
+.tab.active{background:#2563eb;color:#fff}
+.grid{display:grid;grid-template-columns:repeat(auto-fit,minmax(220px,1fr));gap:16px}
+.box{background:#f8fafc;border-radius:12px;padding:16px;text-align:center}
+.box h3{margin:0;font-size:14px;color:#64748b}
+.box p{margin:8px 0 0;font-size:26px;font-weight:700;color:#0f172a}
+select{padding:10px;border-radius:8px;border:1px solid #cbd5e1;font-size:14px}
+.footer{text-align:center;color:#64748b;padding:20px}
 </style>
 </head>
-
 <body>
 
-<div class="app">
+<div class="header">Employee Leave Management System</div>
 
-<!-- LOGIN -->
-<div id="login">
-  <h2>Dashboard Cuti</h2>
-  <input id="id" placeholder="Masukkan Privy ID">
-  <button onclick="cek()">Masuk</button>
+<div class="container">
+
+<div class="card">
+  <label>Employee ID</label><br>
+  <input id="empid" placeholder="Enter Employee ID" style="padding:10px;width:250px;border-radius:8px;border:1px solid #cbd5e1">
+  <button onclick="loadAnnual()" style="padding:10px 16px;border:none;border-radius:8px;background:#2563eb;color:#fff;font-weight:600;margin-left:8px">Login</button>
 </div>
 
-<!-- DASHBOARD -->
-<div id="dash" style="display:none">
+<div class="tabs">
+  <div class="tab active" id="tab1" onclick="showTab(1)">Annual Leave</div>
+  <div class="tab" id="tab2" onclick="showTab(2)">Leave Tracking</div>
+</div>
 
-  <div class="profile">
-    <h3 id="nama"></h3>
-    <small id="role"></small><br>
-    <small>Join: <span id="join"></span></small>
+<!-- TAB 1 -->
+<div id="content1" class="card">
+  <h2>Annual Leave Summary</h2>
+  <div class="grid">
+    <div class="box"><h3>Annual Leave</h3><p id="annual">-</p></div>
+    <div class="box"><h3>Bonus Leave</h3><p id="bonus">-</p></div>
+    <div class="box"><h3>Total Leave</h3><p id="total">-</p></div>
+    <div class="box"><h3>Leave Taken</h3><p id="taken">-</p></div>
+    <div class="box"><h3>Year-End Balance</h3><p id="yearend">-</p></div>
+    <div class="box"><h3>Available This Month</h3><p id="monthly">-</p></div>
   </div>
+</div>
 
-  <div class="card">
-    <span class="stat-title">Jatah</span>
-    <b id="jatah"></b>
+<!-- TAB 2 -->
+<div id="content2" class="card" style="display:none">
+  <h2>Monthly Leave Tracking</h2>
+  <select id="bulan" onchange="loadTracking()">
+    <option>Januari</option><option>Februari</option><option>Maret</option>
+    <option>April</option><option>Mei</option><option>Juni</option>
+    <option>Juli</option><option>Agustus</option><option>September</option>
+    <option>Oktober</option><option>November</option><option>Desember</option>
+  </select>
+
+  <div class="grid" style="margin-top:16px">
+    <div class="box"><h3>Annual Leave</h3><p id="t1">0</p></div>
+    <div class="box"><h3>Personal Leave</h3><p id="t2">0</p></div>
+    <div class="box"><h3>Sick Leave</h3><p id="t3">0</p></div>
+    <div class="box"><h3>Medical Leave</h3><p id="t4">0</p></div>
+    <div class="box"><h3>Special Leave</h3><p id="t5">0</p></div>
   </div>
-
-  <div class="card">
-    <span class="stat-title">Terpakai</span>
-    <b id="terpakai"></b>
-  </div>
-
-  <div class="card">
-    <span class="stat-title">Sisa Bisa Diambil</span>
-    <b id="sisa"></b>
-  </div>
-
-  <button class="logout" onclick="logout()">Logout</button>
-
 </div>
 
 </div>
+
+<div class="footer">© 2026 Leave Management System</div>
 
 <script>
-const api = "https://script.google.com/macros/s/AKfycbwFY2YKbdxlMBez_1ZqHexXnMA5r1OV_GsfpWVilvZPnvRxO6XjeJ3M-wECaswVtrTtGA/exec";
+const API_URL = "https://script.google.com/macros/s/AKfycbwFY2YKbdxlMBez_1ZqHexXnMA5r1OV_GsfpWVilvZPnvRxO6XjeJ3M-wECaswVtrTtGA/exec";
 
-function cek(){
-  const id = document.getElementById("id").value;
-
-  fetch(`${api}?id=${id}`)
-  .then(r=>r.json())
-  .then(d=>{
-    if(d.error){
-      alert("Privy ID tidak ditemukan");
-    }else{
-      login.style.display="none";
-      dash.style.display="block";
-
-      nama.innerText=d.nama;
-      role.innerText=d.role;
-      join.innerText=new Date(d.join).toLocaleDateString();
-
-      jatah.innerText=d.jatah;
-      terpakai.innerText=d.terpakai;
-
-      sisa.innerText=d.sisa;
-      sisa.className=d.sisa<0?"red":"green";
-    }
-  })
+function showTab(n){
+  document.getElementById('content1').style.display = n==1?'block':'none';
+  document.getElementById('content2').style.display = n==2?'block':'none';
+  document.getElementById('tab1').classList.toggle('active',n==1);
+  document.getElementById('tab2').classList.toggle('active',n==2);
 }
 
-function logout(){
-  location.reload();
+function loadAnnual(){
+  const id=document.getElementById('empid').value;
+  fetch(`${API_URL}?id=${id}`)
+  .then(r=>r.json())
+  .then(d=>{
+    annual.innerText=d.annual;
+    bonus.innerText=d.bonus;
+    total.innerText=d.total;
+    taken.innerText=d.taken;
+    yearend.innerText=d.year_end_balance;
+    monthly.innerText=d.annual_balance;
+  });
+}
+
+function loadTracking(){
+  const id=document.getElementById('empid').value;
+  const b=document.getElementById('bulan').value;
+  fetch(`${API_URL}?mode=tracking&id=${id}&bulan=${b}`)
+  .then(r=>r.json())
+  .then(d=>{
+    t1.innerText=d.cuti_tahunan||0;
+    t2.innerText=d.izin||0;
+    t3.innerText=d.sakit||0;
+    t4.innerText=d.cuti_sakit||0;
+    t5.innerText=d.cuti_spesial||0;
+  });
 }
 </script>
 
 </body>
 </html>
-

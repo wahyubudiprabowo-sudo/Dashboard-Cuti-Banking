@@ -8,38 +8,38 @@
 <style>
 body{
   margin:0;
-  font-family:Segoe UI, sans-serif;
-  background:#f2f5f9;
+  font-family:Segoe UI,sans-serif;
+  background:#eef2f7;
 }
 .header{
-  background:#1e3c72;
+  background:#2c5364;
   color:white;
-  padding:15px 20px;
+  padding:18px 25px;
   display:flex;
   justify-content:space-between;
   align-items:center;
 }
 .card{
   background:white;
-  margin:20px;
-  padding:20px;
-  border-radius:12px;
-  box-shadow:0 5px 15px rgba(0,0,0,.1);
+  margin:25px;
+  padding:25px;
+  border-radius:16px;
+  box-shadow:0 10px 25px rgba(0,0,0,.1);
 }
 .tabs{
   display:flex;
-  margin:20px;
+  margin:0 25px;
 }
 .tabs button{
   flex:1;
   padding:12px;
   border:none;
-  cursor:pointer;
-  background:#ddd;
   font-weight:bold;
+  cursor:pointer;
+  background:#ccc;
 }
 .tabs button.active{
-  background:#1e3c72;
+  background:#2c5364;
   color:white;
 }
 .hidden{display:none;}
@@ -48,15 +48,15 @@ table{
   border-collapse:collapse;
 }
 td{
-  padding:10px;
+  padding:12px;
   border-bottom:1px solid #eee;
 }
 .logout{
-  background:red;
+  background:#c0392b;
   color:white;
   border:none;
-  padding:8px 14px;
-  border-radius:6px;
+  padding:8px 16px;
+  border-radius:8px;
   cursor:pointer;
 }
 </style>
@@ -75,51 +75,46 @@ td{
 
 <div id="content1" class="card"></div>
 <div id="content2" class="card hidden">
-  <h3>Monthly Leave Tracking</h3>
-  <p>Coming soon / can be linked to monthly sheet</p>
+<h3>Monthly Leave Tracking</h3>
+<p>Tracking per month can be integrated later.</p>
 </div>
 
 <script>
 const API="https://script.google.com/macros/s/AKfycbxhcanAcUP06XdvwJFuFioqqNF_CxICBEFMOHBLaCFDa5eVF3oiasFfK__giFWJXgMLqw/exec";
 
-// Session check
-const privyId=localStorage.getItem("privyId");
-if(!privyId){
-  window.location="login.html";
-}
+const id=sessionStorage.getItem("privyId");
+if(!id) window.location.href="index.html";
 
-// Load user leave
-fetch(API+"?mode=leave&id="+privyId)
-.then(r=>r.json())
-.then(d=>{
+fetch(API+"?mode=leave&id="+encodeURIComponent(id))
+.then(r=>r.text())
+.then(t=>{
+  const d=JSON.parse(t);
   if(d.status!="ok"){logout();return;}
 
-  document.getElementById("userInfo").innerText=
-    d.name+" - "+d.position;
+  userInfo.innerText=d.name+" - "+d.position;
 
-  document.getElementById("content1").innerHTML=`
+  content1.innerHTML=`
   <h3>Annual Leave Summary</h3>
   <table>
-    <tr><td>Annual Leave</td><td>${d.annual}</td></tr>
-    <tr><td>Bonus Annual Leave</td><td>${d.bonus}</td></tr>
-    <tr><td>Total Annual Leave</td><td>${d.total}</td></tr>
-    <tr><td>Leave Taken</td><td>${d.taken}</td></tr>
-    <tr><td>Year-End Leave Balance</td><td>${d.yearEnd}</td></tr>
-    <tr><td><b>Available Leave</b></td><td><b>${d.available}</b></td></tr>
-  </table>
-  `;
+  <tr><td>Annual Leave</td><td>${d.annual}</td></tr>
+  <tr><td>Bonus Annual Leave</td><td>${d.bonus}</td></tr>
+  <tr><td>Total Annual Leave</td><td>${d.total}</td></tr>
+  <tr><td>Leave Taken</td><td>${d.taken}</td></tr>
+  <tr><td>Year-End Leave Balance</td><td>${d.yearEnd}</td></tr>
+  <tr><td><b>Available Leave</b></td><td><b>${d.available}</b></td></tr>
+  </table>`;
 });
 
 function logout(){
-  localStorage.clear();
-  window.location="login.html";
+  sessionStorage.clear();
+  window.location.href="index.html";
 }
 
 function showTab(n){
-  document.getElementById("content1").classList.toggle("hidden",n!=1);
-  document.getElementById("content2").classList.toggle("hidden",n!=2);
-  document.getElementById("tab1").classList.toggle("active",n==1);
-  document.getElementById("tab2").classList.toggle("active",n==2);
+  content1.classList.toggle("hidden",n!=1);
+  content2.classList.toggle("hidden",n!=2);
+  tab1.classList.toggle("active",n==1);
+  tab2.classList.toggle("active",n==2);
 }
 </script>
 

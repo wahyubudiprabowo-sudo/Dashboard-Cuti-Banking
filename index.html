@@ -1,91 +1,111 @@
 <!DOCTYPE html>
-<html>
+<html lang="en">
 <head>
+<meta charset="UTF-8">
 <title>Leave System Login</title>
-<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="viewport" content="width=device-width, initial-scale=1.0">
+
 <style>
 body{
   margin:0;
+  font-family:Segoe UI, sans-serif;
+  background:linear-gradient(135deg,#1e3c72,#2a5298);
   height:100vh;
   display:flex;
   justify-content:center;
   align-items:center;
-  background:linear-gradient(135deg,#0f2027,#203a43,#2c5364);
-  font-family:Segoe UI;
 }
-.login-box{
+.box{
   background:white;
-  padding:35px;
-  width:350px;
-  border-radius:16px;
-  box-shadow:0 20px 40px rgba(0,0,0,.3);
+  padding:40px;
+  width:360px;
+  border-radius:14px;
+  box-shadow:0 10px 30px rgba(0,0,0,.3);
   text-align:center;
 }
-.login-box h2{
-  margin-bottom:10px;
-  color:#2c5364;
-}
-.login-box p{
-  color:#777;
-  font-size:14px;
-}
+h2{margin-bottom:20px;}
 input{
   width:100%;
   padding:12px;
-  margin:10px 0;
+  margin:8px 0;
   border-radius:8px;
   border:1px solid #ccc;
-  font-size:14px;
 }
 button{
   width:100%;
   padding:12px;
-  margin-top:15px;
-  background:linear-gradient(135deg,#2c5364,#0f2027);
+  background:#1e3c72;
   color:white;
   border:none;
-  border-radius:10px;
-  font-size:15px;
+  border-radius:8px;
+  font-weight:bold;
   cursor:pointer;
 }
-button:hover{
-  opacity:.9;
-}
-.footer{
-  margin-top:15px;
-  font-size:12px;
-  color:#aaa;
-}
+button:hover{opacity:.9}
+.msg{margin-top:10px;color:red;font-size:14px}
+.hidden{display:none}
 </style>
 </head>
 <body>
 
-<div class="login-box">
-  <h2>Employee Leave System</h2>
-  <p>Sign in to your dashboard</p>
+<div class="box">
 
-  <input id="id" placeholder="Privy ID">
-  <input id="pw" type="password" placeholder="Password">
+<h2>Leave System Login</h2>
 
-  <button onclick="login()">Login</button>
+<div id="loginBox">
+<input id="id" placeholder="Privy ID">
+<input id="pass" type="password" placeholder="Password">
+<button onclick="login()">Login</button>
+<div id="msg" class="msg"></div>
+</div>
 
-  <div class="footer">
-    Secure HR Portal © 2026
-  </div>
+<div id="changeBox" class="hidden">
+<input id="newpass" type="password" placeholder="New Password">
+<button onclick="changePassword()">Change Password</button>
+<div id="msg2" class="msg"></div>
+</div>
+
 </div>
 
 <script>
-const API="https://script.google.com/macros/s/AKfycbw5M-jseprlgAy34MB7zYXdit97EdbmSfakjhfqEeIR-E-m768YBV5DPznWiXMkwkp5Zw/exec";
+const API="https://script.google.com/macros/s/AKfycbzm4DyXYsV4QL7SFXh2DOByUppCIs9cJlwGhMLJ36hY/dev";
+
+let currentId="";
 
 function login(){
-  fetch(`${API}?mode=login&id=${id.value}&pw=${pw.value}`)
+  const id=document.getElementById("id").value;
+  const pass=document.getElementById("pass").value;
+
+  fetch(API+"?mode=login&id="+id+"&pass="+pass)
   .then(r=>r.json())
   .then(d=>{
     if(d.status=="ok"){
-      sessionStorage.setItem("privyId",id.value);
+      currentId=id;
+
+      if(d.forceChange=="YES"){
+        document.getElementById("loginBox").classList.add("hidden");
+        document.getElementById("changeBox").classList.remove("hidden");
+      }else{
+        localStorage.setItem("privyId",id);
+        window.location="dashboard.html";
+      }
+    }else{
+      document.getElementById("msg").innerText="Login Failed";
+    }
+  });
+}
+
+function changePassword(){
+  const np=document.getElementById("newpass").value;
+
+  fetch(API+"?mode=changePassword&id="+currentId+"&pass="+np)
+  .then(r=>r.json())
+  .then(d=>{
+    if(d.status=="ok"){
+      alert("Password changed successfully");
       window.location="dashboard.html";
     }else{
-      alert("Login failed");
+      document.getElementById("msg2").innerText="Failed to change password";
     }
   });
 }

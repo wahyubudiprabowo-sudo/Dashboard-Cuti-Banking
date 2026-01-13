@@ -2,7 +2,7 @@
 <html lang="en">
 <head>
 <meta charset="UTF-8">
-<title>Leave Dashboard</title>
+<title>Banking Verification Dashboard</title>
 <meta name="viewport" content="width=device-width, initial-scale=1">
 
 <style>
@@ -29,12 +29,8 @@ body{
   padding:8px 16px;
   border-radius:8px;
   cursor:pointer;
-  transition:.2s;
 }
-.logout:hover{opacity:.85;}
-.container{
-  padding:25px;
-}
+.container{padding:25px;}
 .cards{
   display:grid;
   grid-template-columns:repeat(auto-fit,minmax(180px,1fr));
@@ -46,22 +42,13 @@ body{
   border-radius:14px;
   box-shadow:0 4px 15px rgba(0,0,0,.05);
   text-align:center;
-  transition:.3s;
-}
-.cardBox:hover{
-  transform:translateY(-5px);
-  box-shadow:0 8px 20px rgba(0,0,0,.1);
 }
 .cardBox h3{
   margin:0;
   font-size:28px;
   color:#1e3c72;
 }
-.cardBox p{
-  margin:8px 0 0;
-  color:#555;
-  font-weight:500;
-}
+.cardBox p{margin-top:8px;color:#555;font-weight:500;}
 .tabs{
   margin-top:30px;
   display:flex;
@@ -75,7 +62,6 @@ body{
   background:#ddd;
   font-weight:bold;
   cursor:pointer;
-  transition:.2s;
 }
 .tabs button.active{
   background:#1e3c72;
@@ -88,17 +74,9 @@ body{
   border-radius:14px;
   box-shadow:0 4px 15px rgba(0,0,0,.05);
 }
-.section table{
-  width:100%;
-  border-collapse:collapse;
-}
-.section td{
-  padding:12px;
-  border-bottom:1px solid #eee;
-}
-.section tr:hover td{
-  background:#f0f4f8;
-}
+.section table{width:100%;border-collapse:collapse;}
+.section td{padding:12px;border-bottom:1px solid #eee;}
+.hidden{display:none;}
 .footer{
   text-align:center;
   padding:20px;
@@ -117,22 +95,10 @@ body{
 <div class="container">
 
 <div class="cards">
-  <div class="cardBox">
-    <h3 id="annual">0</h3>
-    <p>Annual Leave</p>
-  </div>
-  <div class="cardBox">
-    <h3 id="bonus">0</h3>
-    <p>Bonus Leave</p>
-  </div>
-  <div class="cardBox">
-    <h3 id="taken">0</h3>
-    <p>Leave Taken</p>
-  </div>
-  <div class="cardBox">
-    <h3 id="available">0</h3>
-    <p>Available Leave</p>
-  </div>
+  <div class="cardBox"><h3 id="annual">0</h3><p>Annual Leave</p></div>
+  <div class="cardBox"><h3 id="bonus">0</h3><p>Bonus Leave</p></div>
+  <div class="cardBox"><h3 id="taken">0</h3><p>Leave Taken</p></div>
+  <div class="cardBox"><h3 id="available">0</h3><p>Available Leave</p></div>
 </div>
 
 <div class="tabs">
@@ -149,12 +115,11 @@ body{
 </div>
 
 <div class="footer">
-© 2026 Leave Banking System
+  Banking Verification © 2026
 </div>
 
 <script>
 const API="https://script.google.com/macros/s/AKfycbxhcanAcUP06XdvwJFuFioqqNF_CxICBEFMOHBLaCFDa5eVF3oiasFfK__giFWJXgMLqw/exec";
-
 const id=sessionStorage.getItem("privyId");
 if(!id) window.location.href="index.html";
 
@@ -165,22 +130,21 @@ fetch(API+"?mode=leave&id="+encodeURIComponent(id))
   if(d.status!="ok"){logout();return;}
 
   userInfo.innerText=d.name+" ("+d.position+")";
-
   annual.innerText=d.annual;
   bonus.innerText=d.bonus;
   taken.innerText=d.taken;
   available.innerText=d.available;
 
   content1.innerHTML=`
-  <h3>Annual Leave Detail</h3>
-  <table>
-    <tr><td>Annual Leave</td><td>${d.annual}</td></tr>
-    <tr><td>Bonus Annual Leave</td><td>${d.bonus}</td></tr>
-    <tr><td>Total Annual Leave</td><td>${d.total}</td></tr>
-    <tr><td>Leave Taken</td><td>${d.taken}</td></tr>
-    <tr><td>Year-End Leave Balance</td><td>${d.yearEnd}</td></tr>
-    <tr><td><b>Available Leave</b></td><td><b>${d.available}</b></td></tr>
-  </table>
+    <h3>Annual Leave Detail</h3>
+    <table>
+      <tr><td>Annual Leave</td><td>${d.annual}</td></tr>
+      <tr><td>Bonus Annual Leave</td><td>${d.bonus}</td></tr>
+      <tr><td>Total Annual Leave</td><td>${d.total}</td></tr>
+      <tr><td>Leave Taken</td><td>${d.taken}</td></tr>
+      <tr><td>Year-End Leave Balance</td><td>${d.yearEnd}</td></tr>
+      <tr><td><b>Available Leave</b></td><td><b>${d.available}</b></td></tr>
+    </table>
   `;
 });
 
@@ -188,7 +152,6 @@ function logout(){
   sessionStorage.clear();
   window.location.href="index.html";
 }
-
 function showTab(n){
   content1.classList.toggle("hidden",n!=1);
   content2.classList.toggle("hidden",n!=2);
